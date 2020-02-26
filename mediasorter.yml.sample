@@ -1,0 +1,70 @@
+---
+# Example configuration file for mediasorter
+# Copy this sample to /etc/mediasorter/mediasorter.yml and replace the various attributes
+# with the values for your environment. For more details please see the README.
+
+mediasorter:
+
+    # Logging configuration
+    logging:
+
+        # Enable or disable file logging
+        file: true
+
+        # Log messages to this file - ensure the user running mediasorter can write to it
+        logfile: "/var/log/mediasorter.log"
+
+    # Metadata API configuration
+    api:
+
+        # TVMaze API configuration (for TV metadata)
+        tvmaze:
+
+            # Base URL for TVMaze; should generally not be changed
+            url: "http://api.tvmaze.com"
+
+            # Search path for TVMaze; should generally not be changed
+            # Variables replaced at runtime:
+            #   * "show": the show name query, extracted from the source filename
+            path: "singlesearch/shows?q={show}&embed=episodes"
+
+        # The Movie DB API configuration (for Movie metadata)
+        tmdb:
+
+            # API key for TMDB; CHANGE THIS TO YOUR OWN VALID API KEY
+            key: "acdefghijklmnopqrstuvwxyz1234567"
+
+            # Base URL for TMDB; should generally not be changed
+            url: "https://api.themoviedb.org/3"
+
+            # Search path for TMDB; should generally not be changed
+            # Variables replaced at runtime:
+            #  * "key": the TMDB API key specified above
+            #  * "title": the movie name query, extracted from the source filename
+            path: "search/movie?api_key={key}&query={title}"
+       
+    # Source file parameters
+    parameters:
+
+        # Valid file extensions for media files to parse; useful to specify which files should
+        # be parsed inside source directories when operating recursively
+        valid_extensions:
+          - '.mkv'
+          - '.avi'
+          - '.mp4'
+
+        # Filename split characters for source files; specifies the possible characters used
+        # to split filenames, usually either periods or spaces (e.g. `My.Show.EXXYXX.mkv` or
+        # `The Great Movie 2019.mkv`); additional characters can be added if needed, tried
+        # in the order specified
+        split_characters:
+          - '.'
+          - ' '
+
+        # Minimum split length; specifies the minimum number of split fields to be considered
+        # a valid result for the given split_character; 2 is usually a good default
+        min_split_length: 2
+
+        # Whether or not to move "The" at the start of titles to the end of the name (e.g.
+        # "The Movie" -> "Movie, The")
+        suffix_the: true
