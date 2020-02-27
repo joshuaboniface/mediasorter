@@ -62,7 +62,8 @@ mediasorter:
           - ' '
 
         # Minimum split length; specifies the minimum number of split fields to be considered
-        # a valid result for the given split_character; 2 is usually a good default
+        # a valid result for the given split_character; 2 is usually a good default; note that
+        # the source file extension is *not* counted towards this length
         min_split_length: 2
 
         # Whether or not to move "The" at the start of titles to the end of the name (e.g.
