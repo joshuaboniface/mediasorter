@@ -55,7 +55,7 @@ def sort_tv_file(config, srcpath, dstpath):
     fileext = os.path.splitext(basename)[-1]
 
     if not fileext in config['valid_extensions']:
-        return False
+        return False, False
 
     # Try splitting the filename
     for split_character in config['split_characters']:
@@ -64,7 +64,7 @@ def sort_tv_file(config, srcpath, dstpath):
             break
     if len(split_filename) < config['min_split_length']:
         logger(config, "Error: Filename '{}' could not be split into sufficient parts to be parsed.".format(filename))
-        return False
+        return False, False
 
     # Get the series title and SXXEYY identifier, then end; we get the rest from TVMaze
     end_idx = len(split_filename)
@@ -141,7 +141,7 @@ def sort_movie_file(config, srcpath, dstpath):
     fileext = os.path.splitext(basename)[-1]
 
     if not fileext in config['valid_extensions']:
-        return False
+        return False, False
 
     # Try splitting the filename
     for split_character in config['split_characters']:
@@ -150,7 +150,7 @@ def sort_movie_file(config, srcpath, dstpath):
             break
     if len(split_filename) < config['min_split_length']:
         logger(config, "Error: Filename '{}' could not be split into sufficient parts to be parsed.".format(filename))
-        return False
+        return False, False
 
     # Get the year identifier, then end; we get the rest from TVDB
     year_idx = len(split_filename)
@@ -189,7 +189,7 @@ def sort_movie_file(config, srcpath, dstpath):
 
     if movie_title == 'unnamed':
         logger(config, "Error: No movie was found in the database for filename '{}'.".format(filename))
-        return False
+        return False, False
 
     if config['suffix_the']:
         # Fix leading The's in the movie title
@@ -233,6 +233,9 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
         file_dst_path, file_dst_filename = sort_tv_file(config, srcpath, dstpath)
     if mediatype == 'movie':
         file_dst_path, file_dst_filename = sort_movie_file(config, srcpath, dstpath)
+
+    if not file_dst_filename:
+        return 1
 
     # Ensure our dst_path exists or create it
     if not os.path.isdir(file_dst_path) and not dryrun:
