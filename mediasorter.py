@@ -406,7 +406,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
     
     try:
         config = {
-			'tvmaze_api_base':  o_config['mediasorter']['api']['tvmaze']['url'],
+            'tvmaze_api_base':  o_config['mediasorter']['api']['tvmaze']['url'],
             'tvmaze_api_path':  o_config['mediasorter']['api']['tvmaze']['path'],
             'tmdb_api_base':    o_config['mediasorter']['api']['tmdb']['url'],
             'tmdb_api_path':    o_config['mediasorter']['api']['tmdb']['path'],
