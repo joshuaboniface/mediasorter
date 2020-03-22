@@ -332,6 +332,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'], max_content_width=12
 @click.option(
     '-t', '--type', 'mediatype',
     type=click.Choice(['tv', 'movie']),
+    required=True,
     help='The type of media to aid the sorter.'
 )
 @click.option(
