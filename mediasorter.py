@@ -78,6 +78,18 @@ def sort_tv_file(config, srcpath, dstpath):
             season_id = int(seid.group(1))
             episode_id = int(seid.group(2))
             break
+        if re.match('[Ss][0-9]+', element):
+            if sxxeyy_idx < 1:
+                sxxeyy_idx = idx
+            seid = re.match('[Ss]([0-9]+)', element)
+            season_id = int(seid.group(1))
+        if re.match('[Ee][0-9]+', element):
+            if sxxeyy_idx < 1:
+                sxxeyy_idx = idx
+            seid = re.match('[Ee]([0-9]+)', element)
+            episode_id = int(seid.group(1))
+        if season_id > 0 and episode_id > 0:
+            break
 
     # Series title: start to sxxeyy_idx
     raw_series_title_unfixed = split_filename[0:sxxeyy_idx]
