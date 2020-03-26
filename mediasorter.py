@@ -94,10 +94,14 @@ def sort_tv_file(config, srcpath, dstpath):
     show_path = config['tvmaze_api_path'].format(show=search_series_title)
     show_url = '{}/{}'.format(config['tvmaze_api_base'], show_path)
     logger(config, "TVMaze API URL:   {}".format(show_url))
-    request = urllib.request.Request(show_url)
-    response = urllib.request.urlopen(request)
-    data = response.read()
-    series_data = json.loads(data)
+    try:
+        request = urllib.request.Request(show_url)
+        response = urllib.request.urlopen(request)
+        data = response.read()
+        series_data = json.loads(data)
+    except urllib.error.HTTPError:
+        logger(config, "Failed to find results for {}".format(show_url))
+        return False, False
     
     # Get the series and episode titles
     series_title = series_data.get('name')
@@ -171,10 +175,14 @@ def sort_movie_file(config, srcpath, dstpath):
     movie_path = config['tmdb_api_path'].format(key=config['tmdb_api_key'], title=search_movie_title)
     movie_url = '{}/{}'.format(config['tmdb_api_base'], movie_path)
     logger(config, "TMDB API URL:     {}".format(movie_url))
-    request = urllib.request.Request(movie_url)
-    response = urllib.request.urlopen(request)
-    data = response.read()
-    movie_data = json.loads(data)
+    try:
+        request = urllib.request.Request(movie_url)
+        response = urllib.request.urlopen(request)
+        data = response.read()
+        movie_data = json.loads(data)
+    except urllib.error.HTTPError:
+        logger(config, "Failed to find results for {}".format(show_url))
+        return False, False
     
     # List all movies and find the one matching the year
     movie_list = movie_data.get('results')
