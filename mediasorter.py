@@ -24,6 +24,7 @@ import pwd
 import grp
 import sys
 import re
+import urllib.parse
 import urllib.request
 import json
 import subprocess
@@ -103,6 +104,7 @@ def sort_tv_file(config, srcpath, dstpath):
     logger(config, "Raw file info:    series='{}' S={} E={}".format(search_series_title, season_id, episode_id))
 
     # Fetch series information from TVMaze
+    search_series_title = urllib.parse.quote(search_series_title)
     show_path = config['tvmaze_api_path'].format(show=search_series_title)
     show_url = '{}/{}'.format(config['tvmaze_api_base'], show_path)
     logger(config, "TVMaze API URL:   {}".format(show_url))
@@ -184,6 +186,7 @@ def sort_movie_file(config, srcpath, dstpath):
     logger(config, "Raw file info:    movie='{}' year={}".format(search_movie_title, search_movie_year))
 
     # Fetch series information from TVMaze
+    search_movie_title = urllib.parse.quote(search_movie_title)
     movie_path = config['tmdb_api_path'].format(key=config['tmdb_api_key'], title=search_movie_title)
     movie_url = '{}/{}'.format(config['tmdb_api_base'], movie_path)
     logger(config, "TMDB API URL:     {}".format(movie_url))
