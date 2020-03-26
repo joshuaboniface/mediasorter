@@ -400,7 +400,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
     # Parse the configuration file
     with open(config_file, 'r') as cfgfile:
         try:
-            o_config = yaml.load(cfgfile)
+            o_config = yaml.load(cfgfile, Loader=yaml.BaseLoader)
         except Exception as e:
             logger(config, 'ERROR: Failed to parse configuration file: {}'.format(e))
             exit(1)
