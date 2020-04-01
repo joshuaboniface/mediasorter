@@ -174,10 +174,11 @@ def sort_movie_file(config, srcpath, dstpath):
     year_idx = len(split_filename)
     search_movie_year = "0000"
     for idx, element in enumerate(split_filename):
-        # A year is an element exactly matching 4 numerals; it has to do
-        if re.match('^[0-9]{4}$', element):
+        # A year is an element exactly matching 4 numerals optionally wrapped in parens
+        match = re.match('^\(?([0-9]{4})\)?$', element)
+        if match:
             year_idx = idx
-            search_movie_year = element
+            search_movie_year = match.group(1)
             # Don't break here, since we always want the last year (e.g. in "2001 A Space Odyssey")
 
     # Series title: start to year_idx
