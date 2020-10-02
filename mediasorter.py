@@ -22,13 +22,11 @@
 import os
 import pwd
 import grp
-import sys
 import re
 import urllib.parse
 import urllib.request
 import json
 import subprocess
-import hashlib
 import click
 import yaml
 from datetime import datetime
