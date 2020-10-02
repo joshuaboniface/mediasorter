@@ -22,7 +22,6 @@
 import os
 import pwd
 import grp
-import sys
 import re
 import urllib.parse
 import urllib.request
