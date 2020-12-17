@@ -427,7 +427,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
     # Parse the configuration file
     with open(config_file, 'r') as cfgfile:
         try:
-            o_config = yaml.load(cfgfile, Loader=yaml.BaseLoader)
+            o_config = yaml.load(cfgfile, Loader=yaml.SafeLoader)
         except Exception as e:
             logger(config, 'ERROR: Failed to parse configuration file: {}'.format(e))
             exit(1)
@@ -449,7 +449,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
     except Exception as e:
         logger(config, 'ERROR: Failed to load configuration: {}'.format(e))
         exit(1)
-    
+
     srcpath = os.path.abspath(os.path.expanduser(srcpath))
     dstpath = os.path.abspath(os.path.expanduser(dstpath))
 
