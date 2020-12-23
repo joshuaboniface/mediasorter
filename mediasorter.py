@@ -185,8 +185,8 @@ def sort_movie_file(config, srcpath, dstpath):
     # Series title: start to year_idx
     raw_movie_title = split_filename[0:year_idx]
     search_movie_title = '+'.join([x.lower() for x in raw_movie_title])
-    # Remove any "The" from the title when searching to avoid weird conflicts
-    search_movie_title = re.sub('[Tt]he\+', '', search_movie_title)
+    # Remove the first "The" from the title when searching to avoid weird conflicts
+    search_movie_title = re.sub('[Tt]he\+', '', search_movie_title, 1)
     logger(config, "Raw file info:    movie='{}' year={}".format(search_movie_title, search_movie_year))
 
     # Fetch series information from TVMaze
