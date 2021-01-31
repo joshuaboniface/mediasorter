@@ -101,6 +101,8 @@ def sort_tv_file(config, srcpath, dstpath):
             seid = re.match('([0-9]+)', element)
             episode_id = int(seid.group(1))
         if episode_id > 0:
+            if season_id == 0:
+                season_id = 1
             break
 
     # Series title: start to sxxeyy_idx
