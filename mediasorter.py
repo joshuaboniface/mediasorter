@@ -70,6 +70,7 @@ def sort_tv_file(config, srcpath, dstpath):
     sxxeyy_idx = 0
     season_id = 0
     episode_id = 0
+    next_match_flag_episode = False
     for idx, element in enumerate(split_filename):
         if re.match('[Ss][0-9]+[Ee][0-9]+', element):
             sxxeyy_idx = idx
@@ -87,7 +88,19 @@ def sort_tv_file(config, srcpath, dstpath):
                 sxxeyy_idx = idx
             seid = re.match('[Ee]([0-9]+)', element)
             episode_id = int(seid.group(1))
-        if season_id > 0 and episode_id > 0:
+        if re.match('[Ee]pisode', element):
+            if sxxeyy_idx < 1:
+                sxxeyy_idx = idx
+                if not re.match(r'[0-9]+', element):
+                    next_match_flag_episode = True
+                    continue
+                else:
+                    seid = re.match('([0-9]+)', element)
+                    episode_id = int(seid.group(1))
+        if next_match_flag_episode:
+            seid = re.match('([0-9]+)', element)
+            episode_id = int(seid.group(1))
+        if episode_id > 0:
             break
 
     # Series title: start to sxxeyy_idx
