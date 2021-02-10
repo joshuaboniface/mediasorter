@@ -18,3 +18,10 @@ mediasorter is free software, released under the GNU GPL version 3 (or later). I
 
 1. Profit!
 
+## fix-episodes.sh
+
+mediasorter isn't that smart. For instance, if a show has inconsistent episode numbers between, say, airdate and a DVD, it can give episodes the wrong numbering.
+
+Fixing this manually is quite cumbersome, and after having to deal with it more than once, I created this quick-and-dirty script that will quickly rename such files, especially for ranges of episodes that are incorrectly numbered.
+
+Run it with no arguments for usage information.
