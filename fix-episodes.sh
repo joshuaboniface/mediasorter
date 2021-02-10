@@ -32,8 +32,8 @@ fi
 
 pushd "${1}" &>/dev/null
 
-increment="${2}"
-extension="${3}"
+extension="${2}"
+increment="${3}"
 start_episode="${4}"
 end_episode="${5}"
 
