@@ -113,8 +113,8 @@ def sort_tv_file(config, srcpath, dstpath):
         if re.match('^[0-9]{4}$', word):
             continue
         # Skip the word "the" in the title, because TVMaze seems to choke on this
-        if re.match('^[Tt]he$', word):
-            continue
+        #if re.match('^[Tt]he$', word):
+        #    continue
         raw_series_title.append(word)
     search_series_title = '+'.join([x.lower() for x in raw_series_title])
     logger(config, "Raw file info:    series='{}' S={} E={}".format(search_series_title, season_id, episode_id))
