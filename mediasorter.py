@@ -116,7 +116,7 @@ def sort_tv_file(config, srcpath, dstpath):
         #if re.match('^[Tt]he$', word):
         #    continue
         raw_series_title.append(word)
-    search_series_title = '+'.join([x.lower() for x in raw_series_title])
+    search_series_title = ' '.join([x.lower() for x in raw_series_title])
     logger(config, "Raw file info:    series='{}' S={} E={}".format(search_series_title, season_id, episode_id))
 
     # Fetch series information from TVMaze
