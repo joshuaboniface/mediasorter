@@ -72,34 +72,34 @@ def sort_tv_file(config, srcpath, dstpath):
     episode_id = 0
     next_match_flag_episode = False
     for idx, element in enumerate(split_filename):
-        if re.match('[Ss][0-9]+[Ee][0-9]+', element):
+        if re.search('[Ss][0-9]+[Ee][0-9]+', element):
             sxxeyy_idx = idx
-            seid = re.match('[Ss]([0-9]+)[Ee]([0-9]+)', element)
-            season_id = int(seid.group(1))
-            episode_id = int(seid.group(2))
+            seid = re.findall('[Ss]([0-9]+)[Ee]([0-9]+)', element)[0]
+            season_id = int(seid[0])
+            episode_id = int(seid[1])
             break
-        if re.match('[Ss][0-9]+', element):
+        if re.search('[Ss][0-9]+', element):
             if sxxeyy_idx < 1:
                 sxxeyy_idx = idx
-            seid = re.match('[Ss]([0-9]+)', element)
-            season_id = int(seid.group(1))
-        if re.match('[Ee][0-9]+', element):
+            seid = re.findall('[Ss]([0-9]+)', element)[0]
+            season_id = int(seid[0])
+        if re.search('[Ee][0-9]+', element):
             if sxxeyy_idx < 1:
                 sxxeyy_idx = idx
-            seid = re.match('[Ee]([0-9]+)', element)
-            episode_id = int(seid.group(1))
-        if re.match('[Ee]pisode', element):
+            seid = re.findall('[Ee]([0-9]+)', element)[0]
+            episode_id = int(seid[0])
+        if re.search('[Ee]pisode', element):
             if sxxeyy_idx < 1:
                 sxxeyy_idx = idx
-                if not re.match(r'[0-9]+', element):
+                if not re.findall(r'[0-9]+', element)[0]:
                     next_match_flag_episode = True
                     continue
                 else:
-                    seid = re.match('([0-9]+)', element)
-                    episode_id = int(seid.group(1))
+                    seid = re.findall('([0-9]+)', element)[0]
+                    episode_id = int(seid[0])
         if next_match_flag_episode:
-            seid = re.match('([0-9]+)', element)
-            episode_id = int(seid.group(1))
+            seid = re.findall('([0-9]+)', element)[0]
+            episode_id = int(seid[0])
         if episode_id > 0:
             if season_id == 0:
                 season_id = 1
@@ -107,10 +107,16 @@ def sort_tv_file(config, srcpath, dstpath):
 
     # Series title: start to sxxeyy_idx
     raw_series_title_unfixed = split_filename[0:sxxeyy_idx]
+    if not raw_series_title_unfixed:
+        # Handle cases where the filename is like DexterS01E03 or similar stupid naming
+        raw_series_title_unfixed = split_filename[0:sxxeyy_idx+1]
     raw_series_title = list()
     for word in raw_series_title_unfixed:
+        # Remove SXXEYY from the word
+        if re.search(r'[Ss][0-9]+[Ee][0-9]+', word):
+            word = re.sub(r'[Ss][0-9]+[Ee][0-9]+', '', word)
         # Skip years in the title, because of The Grand Tour
-        if re.match('^[0-9]{4}$', word):
+        if re.search('^[0-9]{4}$', word):
             continue
         # Skip the word "the" in the title, because TVMaze seems to choke on this
         #if re.match('^[Tt]he$', word):
