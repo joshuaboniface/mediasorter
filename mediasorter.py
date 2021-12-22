@@ -123,10 +123,9 @@ def sort_tv_file(config, srcpath, dstpath):
         #    continue
         raw_series_title.append(word)
     search_series_title = ' '.join([x.lower() for x in raw_series_title])
-    logger(config, "Raw file info:    series='{}' S={} E={}".format(search_series_title, season_id, episode_id))
-
     if search_series_title in config['search_overrides']:
         search_series_title = config['search_overrides'][search_series_title]
+    logger(config, "Raw file info:    series='{}' S={} E={}".format(search_series_title, season_id, episode_id))
 
     # Fetch series information from TVMaze
     search_series_title = urllib.parse.quote(search_series_title)
@@ -209,6 +208,8 @@ def sort_movie_file(config, srcpath, dstpath):
     # Series title: start to year_idx
     raw_movie_title = split_filename[0:year_idx]
     search_movie_title = '+'.join([x.lower() for x in raw_movie_title])
+    if search_movie_title in config['search_overrides']:
+        search_movie_title = config['search_overrides'][search_movie_title]
     # Remove the first "The" from the title when searching to avoid weird conflicts
     search_movie_title = re.sub('[Tt]he\+', '', search_movie_title, 1)
     logger(config, "Raw file info:    movie='{}' year={}".format(search_movie_title, search_movie_year))
