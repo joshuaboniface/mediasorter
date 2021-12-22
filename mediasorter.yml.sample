@@ -69,3 +69,14 @@ mediasorter:
         # Whether or not to move "The" at the start of titles to the end of the name (e.g.
         # "The Movie" -> "Movie, The")
         suffix_the: true
+
+    # Search overrides
+    # Useful if you have some search term that sortfile is generating which does not work reliably.
+    # Use this dictionary, where the key is whatever sortfile generates, and the value is what you
+    # want to search instead, to override the actual search with another one.
+    # For example, "S.W.A.T." (TV show) ends up searching "s w a t" which matches another show, so
+    # you can use this example entry to override that.
+    # Add your own as needed; this list is populated by my own findings. PRs to add to this list
+    # are also welcome if you find shows or movies affected.
+    search_overrides:
+      "s w a t": "swat"

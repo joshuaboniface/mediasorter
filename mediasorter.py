@@ -125,6 +125,9 @@ def sort_tv_file(config, srcpath, dstpath):
     search_series_title = ' '.join([x.lower() for x in raw_series_title])
     logger(config, "Raw file info:    series='{}' S={} E={}".format(search_series_title, season_id, episode_id))
 
+    if search_series_title in config['search_overrides']:
+        search_series_title = config['search_overrides'][search_series_title]
+
     # Fetch series information from TVMaze
     search_series_title = urllib.parse.quote(search_series_title)
     show_path = config['tvmaze_api_path'].format(show=search_series_title)
@@ -464,6 +467,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
             'split_characters': o_config['mediasorter']['parameters']['split_characters'],
             'min_split_length': int(o_config['mediasorter']['parameters']['min_split_length']),
             'suffix_the':       o_config['mediasorter']['parameters']['suffix_the'],
+            'search_overrides': o_config['mediasorter'].get('search_overrides', {}),
             'log_to_file':      o_config['mediasorter']['logging']['file'],
             'logfile':          o_config['mediasorter']['logging']['logfile'],
         }
