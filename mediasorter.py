@@ -171,7 +171,7 @@ def sort_tv_file(config, srcpath, dstpath):
 
     return dst_path, dst_file
 
-def sort_movie_file(config, srcpath, dstpath):
+def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
     """
     Movie handling
     """
@@ -254,18 +254,35 @@ def sort_movie_file(config, srcpath, dstpath):
         movie=movie_title,
         year=movie_year
     )
-    dst_file = '{movie} ({year}){ext}'.format(
-        dst=dstpath,
-        movie=movie_title,
-        year=movie_year,
-        ext=fileext
-    )
+    if metainfo_tag:
+        # Pull metainfo from filename if it is in the map
+        metainfo = list()
+        for item in config['metainfo_map']:
+            for idx, element in enumerate(split_filename):
+                key, value = list(item.items())[0]
+                if re.fullmatch(key, element) and value not in metainfo:
+                    metainfo.append(value)
+
+        dst_file = '{movie} ({year}) - [{metainfo}]{ext}'.format(
+            dst=dstpath,
+            movie=movie_title,
+            year=movie_year,
+            metainfo=' '.join(metainfo),
+            ext=fileext
+        )
+    else:
+        dst_file = '{movie} ({year}){ext}'.format(
+            dst=dstpath,
+            movie=movie_title,
+            year=movie_year,
+            ext=fileext
+        )
     logger(config, "Sorted filename:  {}/{}".format(dst_path, dst_file))
 
     return dst_path, dst_file
 
 # File sorting main function
-def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, dryrun):
+def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, dryrun):
     # Get UID and GID for chowning
     uid = pwd.getpwnam(user)[2]
     gid = grp.getgrnam(group)[2]
@@ -284,7 +301,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
     if mediatype == 'tv':
         file_dst_path, file_dst_filename = sort_tv_file(config, srcpath, dstpath)
     if mediatype == 'movie':
-        file_dst_path, file_dst_filename = sort_movie_file(config, srcpath, dstpath)
+        file_dst_path, file_dst_filename = sort_movie_file(config, srcpath, dstpath, metainfo_tag)
 
     if not file_dst_filename:
         return 1
@@ -429,6 +446,11 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'], max_content_width=12
     help='The Python-octal-format permissions for the created file parent directory if --chown.'
 )
 @click.option(
+    '-tm', '--tag-metainfo', 'metainfo_tag',
+    is_flag=True, default=False, show_default=True,
+    help="Add metainfo tagging to target filenames (see README)."
+)
+@click.option(
     '-x', '--dryrun', 'dryrun',
     is_flag=True, default=False,
     help="Don't perform actual sorting."
@@ -443,7 +465,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'], max_content_width=12
 @click.argument(
     'srcpath'
 )
-def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, dryrun, config_file):
+def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, dryrun, config_file):
     """
     Sort the file or directory SRCPATH.
     """
@@ -468,6 +490,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
             'split_characters': o_config['mediasorter']['parameters']['split_characters'],
             'min_split_length': int(o_config['mediasorter']['parameters']['min_split_length']),
             'suffix_the':       o_config['mediasorter']['parameters']['suffix_the'],
+            'metainfo_map':     o_config['mediasorter']['parameters']['metainfo_map'],
             'search_overrides': o_config['mediasorter'].get('search_overrides', {}),
             'log_to_file':      o_config['mediasorter']['logging']['file'],
             'logfile':          o_config['mediasorter']['logging']['logfile'],
@@ -480,7 +503,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
     dstpath = os.path.abspath(os.path.expanduser(dstpath))
 
     # Sort the media file
-    returncode = sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, dryrun)
+    returncode = sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, dryrun)
     exit(returncode)
 
 # Entry point

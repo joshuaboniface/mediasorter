@@ -70,7 +70,37 @@ mediasorter:
         # "The Movie" -> "Movie, The")
         suffix_the: true
 
-    # Search overrides
+        # Map of metainfo from filenames to file appends; see readme for a detailed explanation
+        metainfo_map:
+          # Cuts
+          - 'Extended.*': "Extended Edition"
+          - 'Director.*': "Directors Cut"
+          - 'Theatr.*': "Theatrical Cut"
+          # Resolutions
+          - '1080[pP]': 1080p
+          - '2160[pP]': 2160p
+          - '4[kK]': 2160p
+          - 'UHD': 2160p
+          # Qualities/Sources
+          - '[Ww]eb*': Web
+          - 'BD': BD
+          - '[Bb]lu': BD
+          - '[Bb]lu[Rr]ay': BD
+          - '[Bb]lu-[Rr]ay': BD
+          - '[Dd][Vv][Dd]': DVD
+          - '.*[Rr][Ee][Mm][Uu][Xx].*': Remux
+          # HDR
+          - 'DoVi': DoVi
+          - 'Vision': DoVi
+          - 'HDR.*': HDR
+          # Audio (first three match "X.Y surround" types, but the "." will cause them to be solo)
+          - '5': 5.x
+          - '7': 7.x
+          - '2': 2.x
+          - 'Atmos': Atmos
+          - 'TrueHD': TrueHD
+
+    # (TV) Search overrides
     # Useful if you have some search term that sortfile is generating which does not work reliably.
     # Use this dictionary, where the key is whatever sortfile generates, and the value is what you
     # want to search instead, to override the actual search with another one.
