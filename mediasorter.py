@@ -292,7 +292,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
     if os.path.isdir(srcpath):
         for filename in sorted(os.listdir(srcpath)):
             child_filename = '{}/{}'.format(srcpath, filename)
-            sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, dryrun)
+            sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, dryrun)
         return 0
 
     logger(config, "Sorting action:   {}".format(action))
