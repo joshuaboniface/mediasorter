@@ -82,7 +82,7 @@ mediasorter:
           - '4[kK]': 2160p
           - 'UHD': 2160p
           # Qualities/Sources
-          - '[Ww]eb*': Web
+          - '[Ww][Ee[Bb].*': Web
           - 'BD': BD
           - '[Bb]lu': BD
           - '[Bb]lu[Rr]ay': BD
