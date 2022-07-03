@@ -361,7 +361,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
     if shasum:
         logger(config, "Generating shasum file... ", nl=False)
         shasum_name = '{}.sha256sum'.format(file_dst)
-        shasum_cmdout = subprocess.run(['sha256sum', '{}'.format(file_dst)], capture_output=True, encoding='utf8')
+        shasum_cmdout = subprocess.run(['sha256sum', '-b', '{}'.format(file_dst)], capture_output=True, encoding='utf8')
         shasum_data = shasum_cmdout.stdout
         if shasum_data:
             shasum_data = shasum_data.strip()
