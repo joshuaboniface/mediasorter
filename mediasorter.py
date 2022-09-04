@@ -29,6 +29,7 @@ import json
 import subprocess
 import click
 import yaml
+from pathlib import Path
 from datetime import datetime
 
 def logger(config, msg, nl=True):
@@ -282,7 +283,7 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
     return dst_path, dst_file
 
 # File sorting main function
-def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, dryrun):
+def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun):
     # Get UID and GID for chowning
     uid = pwd.getpwnam(user)[2]
     gid = grp.getgrnam(group)[2]
@@ -292,7 +293,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
     if os.path.isdir(srcpath):
         for filename in sorted(os.listdir(srcpath)):
             child_filename = '{}/{}'.format(srcpath, filename)
-            sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, dryrun)
+            sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun)
         return 0
 
     logger(config, "Sorting action:   {}".format(action))
@@ -334,6 +335,17 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
     if dryrun:
         logger(config, "Sort command: {}".format(' '.join(action_cmd)))
         return 0
+
+    # Handle upgrading by removing existing dest file
+    dest_path = Path(file_dst)
+    if dst_path.exists():
+        if upgrade:
+            logger(config, "Removing existing destination file for upgrade... ", nl=False)
+            os.remove(file_dst)
+            logger(config, "done.")
+        else:
+            logger(config, "Destination file exists; skipping.")
+            return 1
 
     # Run the action
     logger(config, "Running sort action... ", nl=False)
@@ -451,6 +463,11 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'], max_content_width=12
     help="Add metainfo tagging to target filenames (see README)."
 )
 @click.option(
+    '-p/-P', '--upgrade/--no-upgrade', 'upgrade',
+    is_flag=True, default=True, show_default=True,
+    help='Upgrade (replace) files at the destination.'
+)
+@click.option(
     '-x', '--dryrun', 'dryrun',
     is_flag=True, default=False,
     help="Don't perform actual sorting."
@@ -465,7 +482,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'], max_content_width=12
 @click.argument(
     'srcpath'
 )
-def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, dryrun, config_file):
+def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun, config_file):
     """
     Sort the file or directory SRCPATH.
     """
@@ -503,7 +520,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
     dstpath = os.path.abspath(os.path.expanduser(dstpath))
 
     # Sort the media file
-    returncode = sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, dryrun)
+    returncode = sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun)
     exit(returncode)
 
 # Entry point

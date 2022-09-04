@@ -36,6 +36,12 @@ As an example, the following might be a destination filename with metainfo taggi
 Lord of the Rings: The Return of the King, The (2003) - [Extended Edition 2160p BD Remux 7.x Atmos TrueHD].mkv
 ```
 
+## Replacement
+
+By default, `mediasorter` will replace an existing destination file, if one exists, with a new one during a run. This is useful if new media comes in which should replace the existing media (e.g. an upgraded quality version). To disable this behaviour, use `--no-upgrade`.
+
+This behaviour is redundent when metainfo tagging is enabled for Movies, since the differenting quality profile would trigger a new file to be created anyways; it is thus mostly useful for TV which does not support this feature.
+
 ## fix-episodes.sh
 
 mediasorter isn't that smart. For instance, if a show has inconsistent episode numbers between, say, airdate and a DVD, it can give episodes the wrong numbering.
