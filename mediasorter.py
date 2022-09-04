@@ -425,17 +425,17 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'], max_content_width=12
 @click.option(
     '-i/-I', '--infofile/--no-infofile', 'infofile',
     is_flag=True, default=False, show_default=True,
-    help="Create/don't create information file at target."
+    help="Create information file at target."
 )
 @click.option(
     '-s/-S', '--shasum/--no-shasum', 'shasum',
     is_flag=True, default=False, show_default=True,
-    help="Create/don't create SHA256sum file at target."
+    help="Create SHA256sum file at target."
 )
 @click.option(
     '-o/-O', '--chown/--no-chown', 'chown',
     is_flag=True, default=False, show_default=True,
-    help="Change/don't change ownership and permissions of destfile to match user/group and mode."
+    help="Change ownership and permissions of destfile to match user/group and mode."
 )
 @click.option(
     '-u', '--user', 'user',
