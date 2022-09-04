@@ -42,6 +42,17 @@ By default, `mediasorter` will replace an existing destination file, if one exis
 
 This behaviour is redundent when metainfo tagging is enabled for Movies, since the differenting quality profile would trigger a new file to be created anyways; it is thus mostly useful for TV which does not support this feature.
 
+## Search Overrides
+
+Sometimes, the name of a piece of media, as extracted from the file, will not return proper results from the upstream metadata providers. If this happens, `mediasorter` includes an option in the configuration file to specify search overrides. For example, the TV show "S.W.A.T." does not return sensible results, so it can be overridden like so:
+
+```
+search_overrides:
+  "s w a t": "swat"
+```
+
+This is currently the only *provided* example for demonstration purposes, but it can happen to many different titles. If you find a title that returns no results consider adding it to this list on your local system.
+
 ## fix-episodes.sh
 
 mediasorter isn't that smart. For instance, if a show has inconsistent episode numbers between, say, airdate and a DVD, it can give episodes the wrong numbering.
