@@ -337,7 +337,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
         return 0
 
     # Handle upgrading by removing existing dest file
-    dest_path = Path(file_dst)
+    dst_path = Path(file_dst)
     if dst_path.exists():
         if upgrade:
             logger(config, "Removing existing destination file for upgrade... ", nl=False)

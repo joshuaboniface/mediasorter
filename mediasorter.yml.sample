@@ -77,7 +77,10 @@ mediasorter:
           - 'Director.*': "Directors Cut"
           - 'Theatr.*': "Theatrical Cut"
           # Resolutions
+          - '720[pP]': 720p
+          - '720[iI]': 720i
           - '1080[pP]': 1080p
+          - '1080[iI]': 1080i
           - '2160[pP]': 2160p
           - '4[kK]': 2160p
           - 'UHD': 2160p
