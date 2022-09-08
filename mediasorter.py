@@ -293,7 +293,9 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
     if os.path.isdir(srcpath):
         for filename in sorted(os.listdir(srcpath)):
             child_filename = '{}/{}'.format(srcpath, filename)
-            sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun)
+            returncode = sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun)
+            if returncode > 0:
+                logger(config, "Failed to sort file {}".format(srcpath))
         return 0
 
     logger(config, "Sorting action:   {}".format(action))
@@ -521,6 +523,8 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
 
     # Sort the media file
     returncode = sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun)
+    if returncode > 0:
+        logger(config, "Failed to sort file {}".format(srcpath))
     exit(returncode)
 
 # Entry point
