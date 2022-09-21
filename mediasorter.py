@@ -145,10 +145,19 @@ def sort_tv_file(config, srcpath, dstpath):
     # Get the series and episode titles
     series_title = series_data.get('name')
     episode_list = series_data.get('_embedded').get('episodes')
-    episode_title = 'unnamed'
+    correct_episode = None
     for episode in episode_list:
         if episode.get('season') == season_id and episode.get('number') == episode_id:
-            episode_title = episode.get('name')
+            correct_episode = episode
+            break
+
+    if correct_episode is None:
+        logger(config, "Failed to find valid result for {}".format(srcpath))
+        return False, False
+
+    episode_title = correct_episode.get('name', 'Unnamed')
+    # Sometimes, we get a slash; only invalid char on *NIX so replace it
+    episode_title.replace(' / ', ' ')
 
     if config['suffix_the']:
         # Fix leading The's in the series title
@@ -168,6 +177,7 @@ def sort_tv_file(config, srcpath, dstpath):
         title=episode_title,
         ext=fileext
     )
+
     logger(config, "Sorted filename:  {}/{}".format(dst_path, dst_file))
 
     return dst_path, dst_file
