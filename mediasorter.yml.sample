@@ -113,3 +113,11 @@ mediasorter:
     # are also welcome if you find shows or movies affected.
     search_overrides:
       "s w a t": "swat"
+
+    # Name overrides
+    # Useful if there is a show you want to "rename" to a different name than what the metadata
+    # providers return. For instance, a purist might want "Start Trek: The Original Series" instead
+    # of the returned "Star Trek". Separated by media type (tv or movie) to avoid cross-changes.
+    name_overrides:
+      tv:
+        "Star Trek": "Star Trek: The Original Series"

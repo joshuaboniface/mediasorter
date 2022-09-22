@@ -53,6 +53,20 @@ search_overrides:
 
 This is currently the only *provided* example for demonstration purposes, but it can happen to many different titles. If you find a title that returns no results consider adding it to this list on your local system.
 
+## Name Overrides
+
+Soemtimes, the name returned by the metadata providers might not match what you want to sort as. Thus `mediasorter` can override titles based on a list provided in the configuration file. For example, if you want the TV show "Star Trek" to be named "Star Trek: The Original Series" instead, it can be overridden like so:
+
+```
+name_overrides:
+  tv:
+    "Star Trek": "Star Trek: The Original Series"
+```
+
+These overrides are specific to media type (`tv` or `movie`) to avoid conflicts, e.g. in this example, with the 2009 film "Star Trek" which would also be changed (erroneously) if this were global.
+
+Name overrides are handled *before* adjusting a suffixed "The", so entries containing "The" should be written normally, e.g. "The Series" instead of "Series, The" even if the latter is what is ultimately written.
+
 ## fix-episodes.sh
 
 mediasorter isn't that smart. For instance, if a show has inconsistent episode numbers between, say, airdate and a DVD, it can give episodes the wrong numbering.
