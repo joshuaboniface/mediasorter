@@ -251,7 +251,7 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
     movie_year = '0000'
     for movie in movie_list:
         release_year = movie.get('release_date', '0000-00-00').split('-')[0]
-        if search_movie_year == '0000' or release_year == search_movie_year:
+        if search_movie_year == '0000' or release_year == search_movie_year or release_year == str(int(search_movie_year) + 1):
             movie_title = movie.get('title')
             movie_year = release_year
             break
