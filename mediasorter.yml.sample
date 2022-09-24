@@ -103,7 +103,7 @@ mediasorter:
           - 'Atmos': Atmos
           - 'TrueHD': TrueHD
 
-    # (TV) Search overrides
+    # Search overrides
     # Useful if you have some search term that sortfile is generating which does not work reliably.
     # Use this dictionary, where the key is whatever sortfile generates, and the value is what you
     # want to search instead, to override the actual search with another one.
@@ -111,6 +111,7 @@ mediasorter:
     # you can use this example entry to override that.
     # Add your own as needed; this list is populated by my own findings. PRs to add to this list
     # are also welcome if you find shows or movies affected.
+    # NOTE: Movies are joined by "+" before this list is checked, so use + in place of spaces here.
     search_overrides:
       "s w a t": "swat"
 
