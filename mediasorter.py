@@ -144,9 +144,9 @@ def sort_tv_file(config, srcpath, dstpath):
     
     # Get the series title
     series_title = series_data.get('name')
-    for title in config['name_overrides']['tv']:
+    for title in config['tv_name_overrides']:
         if title == series_title:
-            series_title = config['name_overrides']['tv'][title]
+            series_title = config['tv_name_overrides'][title]
             break
 
     # Get the episode title
@@ -260,9 +260,9 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
         logger(config, "Error: No movie was found in the database for filename '{}'.".format(filename))
         return False, False
 
-    for title in config['name_overrides']['movie']:
+    for title in config['movie_name_overrides']:
         if title == movie_title:
-            movie_title = config['name_overrides']['movie'][title]
+            movie_title = config['movie_name_overrides'][title]
             break
 
     if config['suffix_the']:
@@ -532,7 +532,8 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
             'suffix_the':       o_config['mediasorter']['parameters']['suffix_the'],
             'metainfo_map':     o_config['mediasorter']['parameters'].get('metainfo_map', []),
             'search_overrides': o_config['mediasorter'].get('search_overrides', {}),
-            'name_overrides':   o_config['mediasorter'].get('name_overrides', {}),
+            'tv_name_overrides':   o_config['mediasorter'].get('name_overrides', {}).get('tv', {}),
+            'movie_name_overrides':   o_config['mediasorter'].get('name_overrides', {}).get('movie', {}),
             'log_to_file':      o_config['mediasorter']['logging']['file'],
             'logfile':          o_config['mediasorter']['logging']['logfile'],
         }
