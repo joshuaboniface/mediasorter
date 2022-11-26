@@ -163,7 +163,7 @@ def sort_tv_file(config, srcpath, dstpath):
 
     episode_title = correct_episode.get('name', 'Unnamed')
     # Sometimes, we get a slash; only invalid char on *NIX so replace it
-    episode_title.replace(' / ', ' ')
+    episode_title.replace('/', '-')
 
     if config['suffix_the']:
         # Fix leading The's in the series title
