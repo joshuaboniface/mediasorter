@@ -245,7 +245,7 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
         logger(config, "Failed to find results for {}".format(show_url))
         return False, False
     
-    # List all movies and find the one matching the year
+    # List all movies and find the one matching the year (within on year either side)
     movie_list = movie_data.get('results')
     movie_title = 'unnamed'
     movie_year = '0000'
@@ -255,6 +255,10 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
             movie_title = movie.get('title')
             movie_year = release_year
             break
+        elif int(release_year) == int(search_movie_year) + 1 or int(release_year) == int(search_movie_year) - 1:
+            movie_title = movie.get('title')
+            movie_year = release_year
+            # Candidate, but don't break
 
     if movie_title == 'unnamed':
         logger(config, "Error: No movie was found in the database for filename '{}'.".format(filename))
