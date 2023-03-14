@@ -173,11 +173,11 @@ def sort_tv_file(config, srcpath, dstpath):
     # Build the final path+filename
     dst_path = '{dst}/{series}/Season {sid}'.format(
         dst=dstpath,
-        series=series_title,
+        series=series_title.replace('/', '-'),
         sid=season_id,
     )
     dst_file = '{series} - S{sid:02d}E{eid:02d} - {title}{ext}'.format(
-        series=series_title,
+        series=series_title.replace('/', '-'),
         sid=season_id,
         eid=episode_id,
         title=episode_title,
