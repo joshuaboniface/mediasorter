@@ -20,6 +20,10 @@ mediasorter is free software, released under the GNU GPL version 3 (or later). I
 
 1. Profit!
 
+## Note for Jellyfin
+
+If you use mediasorter to sort files for Jellyfin, please consider using the "TVMaze" plugin for TV shows and "TheMovieDB" plugin for movies, as the primary metadata sources. These are the metadata providers that mediasorter uses to sort media, and other metadata providers may provide conflicting information about episode orders, etc.
+
 ## Metainfo Tagging
 
 With the `-tm`/`--tag-metainfo` option, additional info can be added to the destination filename to leverage Jellyfin's ["multiple movie versions"](https://jellyfin.org/docs/general/server/media/movies.html#multiple-versions-of-a-movie) feature. Currently, this only works with Movies (not TV episodes) in Jellyfin, and thus in mediasorter as well.
