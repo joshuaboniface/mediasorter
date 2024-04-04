@@ -178,15 +178,19 @@ def sort_tv_file(config, srcpath, dstpath):
         series=series_title.replace('/', '-'),
         sid=season_id,
     )
-    dst_file = '{series} - S{sid:02d}E{eid:02d} - {title}{ext}'.format(
+    dst_name = '{series} - S{sid:02d}E{eid:02d} - {title}'.format(
         series=series_title.replace('/', '-'),
         sid=season_id,
         eid=episode_id,
         title=episode_title,
+    )
+    dst_file = '{dst_name}{ext}'.format(
+        dst_name=dst_name,
         ext=fileext
     )
 
-    logger(config, "Sorted filename:  {}/{}".format(dst_path, dst_file))
+    logger(config, "Sorted full filepath:  {}/{}".format(dst_path, dst_file))
+    logger(config, "Sorted media:  {}".format(dst_name), stderr=False)
 
     return dst_path, dst_file
 
@@ -297,21 +301,25 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
                 if re.fullmatch(key, element) and value not in metainfo:
                     metainfo.append(value)
 
-        dst_file = '{movie} ({year}) - [{metainfo}]{ext}'.format(
+        dst_name = '{movie} ({year}) - [{metainfo}]'.format(
             dst=dstpath,
             movie=movie_title,
             year=movie_year,
-            metainfo=' '.join(metainfo),
-            ext=fileext
+            metainfo=' '.join(metainfo)
         )
     else:
-        dst_file = '{movie} ({year}){ext}'.format(
+        dst_name = '{movie} ({year})'.format(
             dst=dstpath,
             movie=movie_title,
-            year=movie_year,
-            ext=fileext
+            year=movie_year
         )
-    logger(config, "Sorted filename:  {}/{}".format(dst_path, dst_file))
+    dst_file = '{dst_name}{ext}'.format(
+        dst_name=dst_name,
+        ext=fileext
+    )
+
+    logger(config, "Sorted full filepath:  {}/{}".format(dst_path, dst_file))
+    logger(config, "Sorted media:  {}".format(dst_name), stderr=False)
 
     return dst_path, dst_file
 
