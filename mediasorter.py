@@ -32,8 +32,8 @@ import yaml
 from pathlib import Path
 from datetime import datetime
 
-def logger(config, msg, nl=True):
-    click.echo(msg, nl=nl)
+def logger(config, msg, nl=True, stderr=True):
+    click.echo(msg, nl=nl, err=stderr)
 
     log_to_file = config.get('log_to_file', False)
     logfile  = config.get('logfile', False)
