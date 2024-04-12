@@ -256,21 +256,27 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
     movie_list = movie_data.get('results')
     movie_title = 'unnamed'
     movie_year = '0000'
-    for movie in movie_list:
-        release_year = movie.get('release_date', '0000-00-00').split('-')[0]
-        if not release_year:
-            release_year = '0000'
-        if not search_movie_year:
-            search_movie_year = '0000'
-
-        if search_movie_year == '0000' or release_year == search_movie_year:
-            movie_title = movie.get('title')
-            movie_year = release_year
-            break
-        elif int(release_year) == int(search_movie_year) + 1 or int(release_year) == int(search_movie_year) - 1:
-            movie_title = movie.get('title')
-            movie_year = release_year
-            # Candidate, but don't break
+    if len(movie_list) == 1:
+        # If there's exactly one result, then we just use that
+        movie_title = movie_list[0].get('title')
+        movie_year = movie_list[0].get('release_date', '0000-00-00').split('-')[0]
+    else:
+        # Otherwise, loop through the results and select the movie with the closest year
+        for movie in movie_list:
+            release_year = movie.get('release_date', '0000-00-00').split('-')[0]
+            if not release_year:
+                release_year = '0000'
+            if not search_movie_year:
+                search_movie_year = '0000'
+    
+            if search_movie_year == '0000' or release_year == search_movie_year:
+                movie_title = movie.get('title')
+                movie_year = release_year
+                break
+            elif int(release_year) == int(search_movie_year) + 1 or int(release_year) == int(search_movie_year) - 1:
+                movie_title = movie.get('title')
+                movie_year = release_year
+                # Candidate, but don't break
 
     if movie_title == 'unnamed':
         logger(config, "Error: No movie was found in the database for filename '{}'.".format(filename))
