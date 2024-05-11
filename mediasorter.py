@@ -161,7 +161,7 @@ def sort_tv_file(config, srcpath, dstpath):
         try:
             response = requests.get(series_url, headers=tvdb_headers)
             series_data = response.json()
-            if series_data["status"] != "success":
+            if series_data["status"] != "success" or not series_data["data"]["episodes"]:
                 continue
             found_episode = series_data
             break
