@@ -17,16 +17,27 @@ mediasorter:
     # Metadata API configuration
     api:
 
-        # TVMaze API configuration (for TV metadata)
-        tvmaze:
+        # TVDB API configuration (for TV metadata)
+        tvdb:
 
-            # Base URL for TVMaze; should generally not be changed
-            url: "http://api.tvmaze.com"
+            # API key for TVDB; YOU DO NOT NEED TO CHANGE THIS, it is registered to this project,
+            # though you may change it if you wish to and have your own key
+            key: "c658d42b-d1d1-403d-ae39-9c96997b29a8"
 
-            # Search path for TVMaze; should generally not be changed
+            # Base URL for TVDB; should generally not be changed
+            url: "https://api4.thetvdb.com/v4"
+
+            # Search path for TVDB; should generally not be changed
             # Variables replaced at runtime:
             #   * "show": the show name query, extracted from the source filename
-            path: "singlesearch/shows?q={show}&embed=episodes"
+            search_path: "search?query={show}&type=series"
+
+            # Series path for TVDB to get episode; should generally not be changed
+            # Variables replaced at runtime:
+            #   * "id": the series ID from the search
+            #   * "season": the season number
+            #   * "episode": the episode number
+            series_path: "series/{id}/episodes/default?page=0&season={season}&episodeNumber={episode}"
 
         # The Movie DB API configuration (for Movie metadata)
         tmdb:

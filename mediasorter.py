@@ -65,7 +65,7 @@ def sort_tv_file(config, srcpath, dstpath):
         logger(config, "Error: Filename '{}' could not be split into sufficient parts to be parsed.".format(filename))
         return False, False
 
-    # Get the series title and SXXEYY identifier, then end; we get the rest from TVMaze
+    # Get the series title and SXXEYY identifier, then end; we get the rest from TVDB
     end_idx = len(split_filename)
     sxxeyy_idx = 0
     season_id = 0
@@ -115,49 +115,72 @@ def sort_tv_file(config, srcpath, dstpath):
         # Remove SXXEYY from the word
         if re.search(r'[Ss][0-9]+[Ee][0-9]+', word):
             word = re.sub(r'[Ss][0-9]+[Ee][0-9]+', '', word)
-        # Skip years in the title, because of The Grand Tour
-        if re.search('^[0-9]{4}$', word):
-            continue
-        # Skip the word "the" in the title, because TVMaze seems to choke on this
-        #if re.match('^[Tt]he$', word):
-        #    continue
         raw_series_title.append(word)
     search_series_title = ' '.join([x.lower() for x in raw_series_title])
     if search_series_title in config['search_overrides']:
         search_series_title = config['search_overrides'][search_series_title]
     logger(config, "Raw file info:    series='{}' S={} E={}".format(search_series_title, season_id, episode_id))
 
-    # Fetch series information from TVMaze
-    show_path = config['tvmaze_api_path'].format(show=search_series_title)
-    show_url = '{}/{}'.format(config['tvmaze_api_base'], show_path)
-    logger(config, "TVMaze API URL:   {}".format(show_url))
+    # Log in to TVDB
+    tvdb_login_url = "{}/login".format(config['tvdb_api_base'])
     try:
-        response = requests.get(show_url)
-        series_data = response.json()
+        data = {"apikey": config['tvdb_api_key'], "pin": ""}
+        response = requests.post(
+            tvdb_login_url,
+            data=json.dumps(data),
+            headers={"Content-Type": "application/json"}
+        )
+        tvdb_token = response.json()['data']['token']
+    except Exception:
+        logger(config, "Failed to log in to TVDB")
+        return False, False
+
+    tvdb_headers = {"Authorization": "Bearer {}".format(tvdb_token)}
+
+    # Fetch series information from TVDB
+    show_path = config['tvdb_api_search_path'].format(show=requests.utils.quote(search_series_title))
+    show_url = '{}/{}'.format(config['tvdb_api_base'], show_path)
+    logger(config, "TVDB API Search URL:   {}".format(show_url))
+    try:
+        response = requests.get(show_url, headers=tvdb_headers)
+        show_data = response.json()
+        if show_data["status"] != "success":
+            raise ValueError
     except Exception:
         logger(config, "Failed to find results for {}".format(show_url))
         return False, False
+
+    found_episode = None
+    for series in show_data['data']:
+        series_id = series['tvdb_id']
+
+        # Get episodes list from TVDB
+        series_path = config['tvdb_api_series_path'].format(id=series_id, season=season_id, episode=episode_id)
+        series_url = '{}/{}'.format(config['tvdb_api_base'], series_path)
+        logger(config, "TVDB API Series URL:   {}".format(series_url))
+        try:
+            response = requests.get(series_url, headers=tvdb_headers)
+            series_data = response.json()
+            if series_data["status"] != "success":
+                continue
+            found_episode = series_data
+            break
+        except Exception:
+            continue
+
+    if found_episode is None:
+        logger(config, "Failed to find results for {}".format(series_url))
+        return False, False
     
     # Get the series title
-    series_title = series_data.get('name')
+    series_title = found_episode["data"]["series"]['name']
     for title in config['tv_name_overrides']:
         if title == series_title:
             series_title = config['tv_name_overrides'][title]
             break
 
-    # Get the episode title
-    episode_list = series_data.get('_embedded').get('episodes')
-    correct_episode = None
-    for episode in episode_list:
-        if episode.get('season') == season_id and episode.get('number') == episode_id:
-            correct_episode = episode
-            break
-
-    if correct_episode is None:
-        logger(config, "Failed to find valid result for {}".format(srcpath))
-        return False, False
-
-    episode_title = correct_episode.get('name', 'Unnamed')
+    # Get the episode details
+    episode_title = found_episode["data"]["episodes"][0].get('name')
     # Sometimes, we get a slash; only invalid char on *NIX so replace it
     episode_title = episode_title.replace('/', '-')
     # Remove double-quotes because they can cause a lot of headaches
@@ -235,7 +258,7 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
     logger(config, "Raw file info:    movie='{}' year={}".format(search_movie_title, search_movie_year))
 
     # Fetch movie information from TMDB
-    movie_path = config['tmdb_api_path'].format(key=config['tmdb_api_key'], title=search_movie_title)
+    movie_path = config['tmdb_api_path'].format(key=config['tmdb_api_key'], title=requests.utils.quote(search_movie_title))
     movie_url = '{}/{}'.format(config['tmdb_api_base'], movie_path)
     logger(config, "TMDB API URL:     {}".format(movie_url))
     try:
@@ -540,8 +563,10 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
     
     try:
         config = {
-            'tvmaze_api_base':  o_config['mediasorter']['api']['tvmaze']['url'],
-            'tvmaze_api_path':  o_config['mediasorter']['api']['tvmaze']['path'],
+            'tvdb_api_base':    o_config['mediasorter']['api']['tvdb']['url'],
+            'tvdb_api_search_path':    o_config['mediasorter']['api']['tvdb']['search_path'],
+            'tvdb_api_series_path':    o_config['mediasorter']['api']['tvdb']['series_path'],
+            'tvdb_api_key':     o_config['mediasorter']['api']['tvdb']['key'],
             'tmdb_api_base':    o_config['mediasorter']['api']['tmdb']['url'],
             'tmdb_api_path':    o_config['mediasorter']['api']['tmdb']['path'],
             'tmdb_api_key':     o_config['mediasorter']['api']['tmdb']['key'],
