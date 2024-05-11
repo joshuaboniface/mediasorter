@@ -23,8 +23,7 @@ import os
 import pwd
 import grp
 import re
-import urllib.parse
-import urllib.request
+import requests
 import json
 import subprocess
 import click
@@ -129,16 +128,13 @@ def sort_tv_file(config, srcpath, dstpath):
     logger(config, "Raw file info:    series='{}' S={} E={}".format(search_series_title, season_id, episode_id))
 
     # Fetch series information from TVMaze
-    search_series_title = urllib.parse.quote(search_series_title)
     show_path = config['tvmaze_api_path'].format(show=search_series_title)
     show_url = '{}/{}'.format(config['tvmaze_api_base'], show_path)
     logger(config, "TVMaze API URL:   {}".format(show_url))
     try:
-        request = urllib.request.Request(show_url)
-        response = urllib.request.urlopen(request)
-        data = response.read()
-        series_data = json.loads(data)
-    except urllib.error.HTTPError:
+        response = requests.get(show_url)
+        series_data = response.json()
+    except Exception:
         logger(config, "Failed to find results for {}".format(show_url))
         return False, False
     
@@ -238,17 +234,14 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
         search_movie_title = config['search_overrides'][search_movie_title]
     logger(config, "Raw file info:    movie='{}' year={}".format(search_movie_title, search_movie_year))
 
-    # Fetch series information from TVMaze
-    search_movie_title = urllib.parse.quote(search_movie_title)
+    # Fetch movie information from TMDB
     movie_path = config['tmdb_api_path'].format(key=config['tmdb_api_key'], title=search_movie_title)
     movie_url = '{}/{}'.format(config['tmdb_api_base'], movie_path)
     logger(config, "TMDB API URL:     {}".format(movie_url))
     try:
-        request = urllib.request.Request(movie_url)
-        response = urllib.request.urlopen(request)
-        data = response.read()
-        movie_data = json.loads(data)
-    except urllib.error.HTTPError:
+        response = requests.get(movie_url)
+        movie_data = response.json()
+    except Exception:
         logger(config, "Failed to find results for {}".format(show_url))
         return False, False
     
