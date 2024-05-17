@@ -125,6 +125,7 @@ mediasorter:
     # NOTE: Movies are joined by "+" before this list is checked, so use + in place of spaces here.
     search_overrides:
       "s w a t": "swat"
+      "law and order": "law & order"
 
     # Name overrides
     # Useful if there is a show you want to "rename" to a different name than what the metadata
