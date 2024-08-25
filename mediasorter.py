@@ -169,7 +169,7 @@ def sort_tv_file(config, srcpath, dstpath):
             continue
 
     if found_episode is None:
-        logger(config, "Failed to find results for {}".format(series_url))
+        logger(config, "Failed to find results for {}".format(show_url))
         return False, False
     
     # Get the series title
