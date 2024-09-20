@@ -208,7 +208,7 @@ def sort_tv_file(config, srcpath, dstpath):
         ext=fileext
     )
 
-    logger(config, "Sorted full filepath:  {}/{}".format(dst_path, dst_file))
+    logger(config, "Sorted full filepath:  {}/{}".format(dst_path, dst_file), stderr=False)
     logger(config, "Sorted media:  {}".format(dst_name), stderr=False)
 
     return dst_path, dst_file
@@ -340,7 +340,7 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
         ext=fileext
     )
 
-    logger(config, "Sorted full filepath:  {}/{}".format(dst_path, dst_file))
+    logger(config, "Sorted full filepath:  {}/{}".format(dst_path, dst_file), stderr=False)
     logger(config, "Sorted media:  {}".format(dst_name), stderr=False)
 
     return dst_path, dst_file
