@@ -115,6 +115,9 @@ def sort_tv_file(config, srcpath, dstpath):
         # Remove SXXEYY from the word
         if re.search(r'[Ss][0-9]+[Ee][0-9]+', word):
             word = re.sub(r'[Ss][0-9]+[Ee][0-9]+', '', word)
+        # Only remove years that are in parentheses
+        if re.search(r'^\(([0-9]{4})\)$', word):
+            continue
         raw_series_title.append(word)
     search_series_title = ' '.join([x.lower() for x in raw_series_title])
     if search_series_title in config['search_overrides']:
