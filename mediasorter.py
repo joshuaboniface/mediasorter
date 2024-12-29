@@ -77,33 +77,34 @@ def sort_tv_file(config, srcpath, dstpath):
             seid = re.findall('[Ss]([0-9]+)[Ee]([0-9]+)', element)[0]
             season_id = int(seid[0])
             episode_id = int(seid[1])
-            break
-        if re.search('[Ss][0-9]+', element):
-            if sxxeyy_idx < 1:
-                sxxeyy_idx = idx
-            seid = re.findall('[Ss]([0-9]+)', element)[0]
-            season_id = int(seid[0])
-        if re.search('[Ee][0-9]+', element):
-            if sxxeyy_idx < 1:
-                sxxeyy_idx = idx
-            seid = re.findall('[Ee]([0-9]+)', element)[0]
-            episode_id = int(seid[0])
-        if re.search('[Ee]pisode', element):
-            if sxxeyy_idx < 1:
-                sxxeyy_idx = idx
-                if not re.findall(r'[0-9]+', element)[0]:
-                    next_match_flag_episode = True
-                    continue
-                else:
-                    seid = re.findall('([0-9]+)', element)[0]
-                    episode_id = int(seid[0])
-        if next_match_flag_episode:
-            seid = re.findall('([0-9]+)', element)[0]
-            episode_id = int(seid[0])
-        if episode_id > 0:
-            if season_id == 0:
-                season_id = 1
-            break
+    if sxxeyy_idx < 1:
+        for idx, element in enumerate(split_filename):
+            if re.search('[Ss][0-9]+', element):
+                if sxxeyy_idx < 1:
+                    sxxeyy_idx = idx
+                seid = re.findall('[Ss]([0-9]+)', element)[0]
+                season_id = int(seid[0])
+            if re.search('[Ee][0-9]+', element):
+                if sxxeyy_idx < 1:
+                    sxxeyy_idx = idx
+                seid = re.findall('[Ee]([0-9]+)', element)[0]
+                episode_id = int(seid[0])
+            if re.search('[Ee]pisode', element):
+                if sxxeyy_idx < 1:
+                    sxxeyy_idx = idx
+                    if not re.findall(r'[0-9]+', element)[0]:
+                        next_match_flag_episode = True
+                        continue
+                    else:
+                        seid = re.findall('([0-9]+)', element)[0]
+                        episode_id = int(seid[0])
+            if next_match_flag_episode:
+                seid = re.findall('([0-9]+)', element)[0]
+                episode_id = int(seid[0])
+            if episode_id > 0:
+                if season_id == 0:
+                    season_id = 1
+                break
 
     # Series title: start to sxxeyy_idx
     raw_series_title_unfixed = split_filename[0:sxxeyy_idx]
