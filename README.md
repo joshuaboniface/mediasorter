@@ -46,6 +46,8 @@ By default, `mediasorter` will replace an existing destination file, if one exis
 
 This behaviour is redundent when metainfo tagging is enabled for Movies, since the differenting quality profile would trigger a new file to be created anyways; it is thus mostly useful for TV which does not support this feature.
 
+**NOTE:** This flag was renamed from `--upgrade`/`--no-upgrade` to `--replace`/`--no-replace`! The former will no longer work.
+
 ## Search Overrides
 
 Sometimes, the name of a piece of media, as extracted from the file, will not return proper results from the upstream metadata providers. If this happens, `mediasorter` includes an option in the configuration file to specify search overrides. For example, the TV show "S.W.A.T." does not return sensible results, so it can be overridden like so:
