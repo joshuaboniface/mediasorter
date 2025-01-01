@@ -355,9 +355,13 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
 
 # File sorting main function
 def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun):
-    # Get UID and GID for chowning
-    uid = pwd.getpwnam(user)[2]
-    gid = grp.getgrnam(group)[2]
+    # Get UID and GID for chowning if applicable
+    if chown:
+        uid = pwd.getpwnam(user)[2]
+        gid = grp.getgrnam(group)[2]
+    else:
+        uid = None
+        gid = None
 
     logger(config, ">>> Parsing {}".format(srcpath))
     # Determine if srcpath is a directory, then act recursively
