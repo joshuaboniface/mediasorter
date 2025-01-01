@@ -354,7 +354,7 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
     return dst_path, dst_file
 
 # File sorting main function
-def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun):
+def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun):
     # Get UID and GID for chowning if applicable
     if chown:
         uid = pwd.getpwnam(user)[2]
@@ -368,7 +368,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
     if os.path.isdir(srcpath):
         for filename in sorted(os.listdir(srcpath)):
             child_filename = '{}/{}'.format(srcpath, filename)
-            returncode = sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun)
+            returncode = sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun)
             if returncode > 0:
                 logger(config, "Failed to sort file {}".format(srcpath))
         return 0
@@ -416,8 +416,8 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
     # Handle upgrading by removing existing dest file
     dst_path = Path(file_dst)
     if dst_path.exists():
-        if upgrade:
-            logger(config, "Removing existing destination file for upgrade... ", nl=False)
+        if replace:
+            logger(config, "Removing existing destination file for replacement... ", nl=False)
             os.remove(file_dst)
             logger(config, "done.")
         else:
@@ -540,9 +540,9 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'], max_content_width=12
     help="Add metainfo tagging to target filenames (see README)."
 )
 @click.option(
-    '-p/-P', '--upgrade/--no-upgrade', 'upgrade',
+    '-p/-P', '--replace/--no-replace', 'replace',
     is_flag=True, default=True, show_default=True,
-    help='Upgrade (replace) files at the destination.'
+    help='Replace (overwrite) existing file(s) at the destination.'
 )
 @click.option(
     '-x', '--dryrun', 'dryrun',
@@ -559,7 +559,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'], max_content_width=12
 @click.argument(
     'srcpath'
 )
-def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun, config_file):
+def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun, config_file):
     """
     Sort the file or directory SRCPATH.
     """
@@ -601,7 +601,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
     dstpath = os.path.abspath(os.path.expanduser(dstpath))
 
     # Sort the media file
-    returncode = sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, upgrade, dryrun)
+    returncode = sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun)
     if returncode > 0:
         logger(config, "Failed to sort file {}".format(srcpath))
     exit(returncode)
