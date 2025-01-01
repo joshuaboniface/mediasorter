@@ -42,7 +42,7 @@ Lord of the Rings: The Return of the King, The (2003) - [Extended Edition 2160p 
 
 ## Replacement
 
-By default, `mediasorter` will replace an existing destination file, if one exists, with a new one during a run. This is useful if new media comes in which should replace the existing media (e.g. an upgraded quality version). To disable this behaviour, use `--no-upgrade`.
+By default, `mediasorter` will replace an existing destination file, if one exists, with a new one during a run. This is useful if new media comes in which should replace the existing media (e.g. an upgraded quality version). To disable this behaviour, use `--no-replace`. Note that Mediasorter has **no conception of what "upgraded" or "better" means**! If you leave this option at the default, any "new" file will replace an old file, so be careful and ensure your upstream indexers are configured only to actually upgrade your media quality if applicable!
 
 This behaviour is redundent when metainfo tagging is enabled for Movies, since the differenting quality profile would trigger a new file to be created anyways; it is thus mostly useful for TV which does not support this feature.
 
