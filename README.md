@@ -81,6 +81,8 @@ New users will have this feature enabled by default, as the key is set to `eng` 
 
 If you do not want to use this feature, you can set an empty language in the language` key, or remove it outright; since this key is optional, existing users who wish to preserve current behaviour do not need to do anything.
 
+The `language` key supports all 3-letter codes from ISO 639-2 (`eng`, `nld`, `deu`, etc.) that have translations available on TVDB. If you encounter errors, double-check that the series in question has a translation to your chosen language, or default back to `eng` as this should always be available.
+
 ## fix-episodes.sh
 
 mediasorter isn't that smart. For instance, if a show has inconsistent episode numbers between, say, airdate and a DVD, it can give episodes the wrong numbering.
