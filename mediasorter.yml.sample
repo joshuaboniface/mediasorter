@@ -20,6 +20,9 @@ mediasorter:
         # TVDB API configuration (for TV metadata)
         tvdb:
 
+            # The language to use for series and episode names; leave empty to preserve whatever TVDB first returns without translating
+            language: eng
+
             # API key for TVDB; YOU DO NOT NEED TO CHANGE THIS, it is registered to this project,
             # though you may change it if you wish to and have your own key
             key: "c658d42b-d1d1-403d-ae39-9c96997b29a8"
@@ -38,6 +41,19 @@ mediasorter:
             #   * "season": the season number
             #   * "episode": the episode number
             series_path: "series/{id}/episodes/default?page=0&season={season}&episodeNumber={episode}"
+
+            # Series path for TVDB to get a specific series title translated into the selected language; should generally not be changed
+            # Variables replaced at runtime:
+            #   * "id": the series ID from the search
+            #   * "language": the translation language specified above
+            series_translation_path: "series/{id}/translations/{language}"
+
+            # Episode path for TVDB to get a specific episode translated into the selected language; should generally not be changed
+            # Variables replaced at runtime:
+            #   * "id": the episode ID from the episode in series_path
+            #   * "language": the translation language specified above
+            episode_translation_path: "episodes/{id}/translations/{language}"
+
 
         # The Movie DB API configuration (for Movie metadata)
         tmdb:

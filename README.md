@@ -73,6 +73,14 @@ These overrides are specific to media type (`tv` or `movie`) to avoid conflicts,
 
 Name overrides are handled *before* adjusting a suffixed "The", so entries containing "The" should be written normally, e.g. "The Series" instead of "Series, The" even if the latter is what is ultimately written.
 
+## TVDB Translations
+
+Starting 2025-10-07, we now have functionality to automatically translate TVDB results into your chosen language for file naming purposes. This should help especially in situations with Anime series where the results from TVDB default to Japanese (e.g. translating "ポケットモンスター" into "Pokémon" for the file names for the series ID 76703). With this feature, TVDB API translation endpoints will be used to obtain the translated series title and episode title into the specified language, and these names will be used for files. The series can still be run through the name overrides above afterwards.
+
+New users will have this feature enabled by default, as the key is set to `eng` translations by in the `mediasorter.yml.sample` file. For existing users to enable this functionality, a new key should be added into the TVDB API configuration in `mediasorter.yml`, `language`. If enabled, another two keys, `series_translation_path` and `episode_translation_path`, must be added as well. For an updated reference see `mediasorter.yml.sample`.
+
+If you do not want to use this feature, you can set an empty language in the language` key, or remove it outright; since this key is optional, existing users who wish to preserve current behaviour do not need to do anything.
+
 ## fix-episodes.sh
 
 mediasorter isn't that smart. For instance, if a show has inconsistent episode numbers between, say, airdate and a DVD, it can give episodes the wrong numbering.

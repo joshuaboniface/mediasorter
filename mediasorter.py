@@ -156,10 +156,10 @@ def sort_tv_file(config, srcpath, dstpath):
 
     found_episode = None
     for series in show_data['data']:
-        series_id = series['tvdb_id']
+        series_tvdb_id = series['tvdb_id']
 
         # Get episodes list from TVDB
-        series_path = config['tvdb_api_series_path'].format(id=series_id, season=season_id, episode=episode_id)
+        series_path = config['tvdb_api_series_path'].format(id=series_tvdb_id, season=season_id, episode=episode_id)
         series_url = '{}/{}'.format(config['tvdb_api_base'], series_path)
         logger(config, "TVDB API Series URL:   {}".format(series_url))
         try:
@@ -172,19 +172,63 @@ def sort_tv_file(config, srcpath, dstpath):
         except Exception:
             continue
 
-    if found_episode is None:
+    if not found_episode:
         logger(config, "Failed to find results for {}".format(show_url))
         return False, False
     
-    # Get the series title
-    series_title = found_episode["data"]["series"]['name']
-    for title in config['tv_name_overrides']:
-        if title == series_title:
-            series_title = config['tv_name_overrides'][title]
-            break
+    # Handle translations
+    if config["tvdb_api_language"]:
+        # Get the series name (translated) from TVDB
+        series_translation_path = config['tvdb_api_series_translation_path'].format(id=series_tvdb_id, language=config['tvdb_api_language'])
+        series_translation_url = '{}/{}'.format(config['tvdb_api_base'], series_translation_path)
+        logger(config, "TVDB API Series Translation URL:   {}".format(series_translation_url))
+        try:
+            response = requests.get(series_translation_url, headers=tvdb_headers)
+            series_translation_data = response.json()
+            if series_translation_data["status"] != "success":
+                raise ValueError
+            series_title = series_translation_data["data"]["name"]
+        except Exception:
+            logger(config, "Failed to find results for {}".format(series_translation_url))
+            return False, False
+        # Handle series name overrides
+        for title in config['tv_name_overrides']:
+            if title == series_title:
+                series_title = config['tv_name_overrides'][title]
+                break
 
-    # Get the episode details
-    episode_title = found_episode["data"]["episodes"][0].get('name')
+        # Extract TVDB episode ID from episode data
+        try:
+            episode_tvdb_id = found_episode["data"]["episodes"][0].get("id")
+        except Exception:
+            logger(config, "Failed to find an episode ID for found episode")
+            return False, False
+
+        # Get episode name (translated) from TVDB
+        episode_translation_path = config['tvdb_api_episode_translation_path'].format(id=episode_tvdb_id, language=config['tvdb_api_language'])
+        episode_translation_url = '{}/{}'.format(config['tvdb_api_base'], episode_translation_path)
+        logger(config, "TVDB API Episode Translation URL:   {}".format(episode_translation_url))
+        try:
+            response = requests.get(episode_translation_url, headers=tvdb_headers)
+            episode_translation_data = response.json()
+            if episode_translation_data["status"] != "success":
+                raise ValueError
+            episode_title = episode_translation_data["data"]["name"]
+        except Exception:
+            logger(config, "Failed to find results for {}".format(episode_translation_url))
+            return False, False
+    # Use traditional approach
+    else:
+        # Get the series title from the found_episode data
+        series_title = found_episode["data"]["series"]['name']
+        for title in config['tv_name_overrides']:
+            if title == series_title:
+                series_title = config['tv_name_overrides'][title]
+                break
+
+        # Get the episode name from the found_episode data
+        episode_title = found_episode["data"]["episodes"][0].get('name')
+
     # Sometimes, we get a slash; only invalid char on *NIX so replace it
     episode_title = episode_title.replace('/', '-')
     # Remove double-quotes because they can cause a lot of headaches
@@ -593,6 +637,11 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
             'log_to_file':      o_config['mediasorter']['logging']['file'],
             'logfile':          o_config['mediasorter']['logging']['logfile'],
         }
+        # Handle TVDB translation options separately for backwards compatibility
+        config["tvdb_api_language"] = o_config['mediasorter']['api']['tvdb'].get("language", None)
+        if config["tvdb_api_language"]:
+            config["tvdb_api_series_translation_path"] = o_config['mediasorter']['api']['tvdb']['series_translation_path']
+            config["tvdb_api_episode_translation_path"] = o_config['mediasorter']['api']['tvdb']['episode_translation_path']
     except Exception as e:
         logger(config, 'ERROR: Failed to load configuration: {}'.format(e))
         exit(1)
