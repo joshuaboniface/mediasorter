@@ -1,6 +1,6 @@
 # mediasorter
 
-mediasorter is a tool to automatically "sort" media files from a source naming format  into something nicer for humans to read/organize, and for tools like Jellyfin to parse and collect metadata for. It uses The Movie DB for movie metadata and TVMaze for TV metadata to obtain additional information, then performs the "sort" via a user-selectable mechanism. In this aspect it seeks to be a replacement for FileBot and other similar tools.
+mediasorter is a tool to automatically "sort" media files from a source naming format  into something nicer for humans to read/organize, and for tools like Jellyfin to parse and collect metadata for. It uses The Movie DB for movie metadata and TVDB for TV metadata to obtain additional information, then performs the "sort" via a user-selectable mechanism. In this aspect it seeks to be a replacement for FileBot and other similar tools.
 
 Most aspects of mediasorter can be configured, either inside the main configuration file, or via command-line arguments; it hopes to remain simple yet flexible, doing exactly what the administrator wants and nothing more.
 
@@ -44,7 +44,7 @@ Lord of the Rings: The Return of the King, The (2003) - [Extended Edition 2160p 
 
 By default, `mediasorter` will replace an existing destination file, if one exists, with a new one during a run. This is useful if new media comes in which should replace the existing media (e.g. an upgraded quality version). To disable this behaviour, use `--no-replace`. Note that Mediasorter has **no conception of what "upgraded" or "better" means**! If you leave this option at the default, any "new" file will replace an old file, so be careful and ensure your upstream indexers are configured only to actually upgrade your media quality if applicable!
 
-This behaviour is redundent when metainfo tagging is enabled for Movies, since the differenting quality profile would trigger a new file to be created anyways; it is thus mostly useful for TV which does not support this feature.
+This behaviour is redundent when metainfo tagging is enabled for Movies, since the different quality profile would trigger a new file to be created anyways; it is thus mostly useful for TV which does not support this feature.
 
 **NOTE:** This flag was renamed from `--upgrade`/`--no-upgrade` to `--replace`/`--no-replace`! The former will no longer work.
 
@@ -61,7 +61,7 @@ This is currently the only *provided* example for demonstration purposes, but it
 
 ## Name Overrides
 
-Soemtimes, the name returned by the metadata providers might not match what you want to sort as. Thus `mediasorter` can override titles based on a list provided in the configuration file. For example, if you want the TV show "Star Trek" to be named "Star Trek: The Original Series" instead, it can be overridden like so:
+Sometimes, the name returned by the metadata providers might not match what you want to sort as. Thus `mediasorter` can override titles based on a list provided in the configuration file. For example, if you want the TV show "Star Trek" to be named "Star Trek: The Original Series" instead, it can be overridden like so:
 
 ```
 name_overrides:
@@ -79,7 +79,7 @@ Starting 2025-10-07, we now have functionality to automatically translate TVDB r
 
 New users will have this feature enabled by default, as the key is set to `eng` translations by in the `mediasorter.yml.sample` file. For existing users to enable this functionality, a new key should be added into the TVDB API configuration in `mediasorter.yml`, `language`. If enabled, another two keys, `series_translation_path` and `episode_translation_path`, must be added as well. For an updated reference see `mediasorter.yml.sample`.
 
-If you do not want to use this feature, you can set an empty language in the language` key, or remove it outright; since this key is optional, existing users who wish to preserve current behaviour do not need to do anything.
+If you do not want to use this feature, you can set an empty language in the `language` key, or remove it outright; since this key is optional, existing users who wish to preserve current behaviour do not need to do anything.
 
 The `language` key supports all 3-letter codes from ISO 639-2 (`eng`, `nld`, `deu`, etc.) that have translations available on TVDB. If you encounter errors, double-check that the series in question has a translation to your chosen language, or default back to `eng` as this should always be available.
 
