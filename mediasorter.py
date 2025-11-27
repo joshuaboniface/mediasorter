@@ -414,7 +414,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
             child_filename = '{}/{}'.format(srcpath, filename)
             returncode, reason = sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun)
             if returncode > 0:
-                logger(config, "ERROR: Failed to sort file {}: {}".format(srcpath, reason))
+                logger(config, "ERROR: Failed to sort file {}: {}".format(srcpath, reason), stderr=False)
         return 0, None
 
     logger(config, "Sorting action:   {}".format(action))
@@ -471,7 +471,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
     # Run the action
     logger(config, "Running sort action... ", nl=False)
     process = subprocess.run(action_cmd)
-    stderr = process.stderr.decode().strip()
+    stderr = process.stderr
     retcode = process.returncode
     logger(config, "done.")
 
@@ -615,7 +615,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
         try:
             o_config = yaml.load(cfgfile, Loader=yaml.SafeLoader)
         except Exception as e:
-            logger(config, 'ERROR: Failed to parse configuration file: {}'.format(e))
+            logger(config, 'ERROR: Failed to parse configuration file: {}'.format(e), stderr=False)
             exit(1)
     
     try:
@@ -644,7 +644,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
             config["tvdb_api_series_translation_path"] = o_config['mediasorter']['api']['tvdb']['series_translation_path']
             config["tvdb_api_episode_translation_path"] = o_config['mediasorter']['api']['tvdb']['episode_translation_path']
     except Exception as e:
-        logger(config, 'ERROR: Failed to load configuration: {}'.format(e))
+        logger(config, 'ERROR: Failed to load configuration: {}'.format(e), stderr=False)
         exit(1)
 
     srcpath = os.path.abspath(os.path.expanduser(srcpath))
@@ -653,7 +653,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
     # Sort the media file
     returncode, reason = sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun)
     if returncode > 0:
-        logger(config, "ERROR: Failed to sort file {}: {}".format(srcpath, reason))
+        logger(config, "ERROR: Failed to sort file {}: {}".format(srcpath, reason), stderr=False)
     exit(returncode)
 
 # Entry point
