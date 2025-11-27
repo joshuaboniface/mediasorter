@@ -412,10 +412,10 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
     if os.path.isdir(srcpath):
         for filename in sorted(os.listdir(srcpath)):
             child_filename = '{}/{}'.format(srcpath, filename)
-            returncode = sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun)
+            returncode, reason = sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun)
             if returncode > 0:
-                logger(config, "Failed to sort file {}".format(srcpath))
-        return 0
+                logger(config, "Failed to sort file {}: {}".format(srcpath, reason))
+        return 0, None
 
     logger(config, "Sorting action:   {}".format(action))
 
@@ -426,7 +426,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
         file_dst_path, file_dst_filename = sort_movie_file(config, srcpath, dstpath, metainfo_tag)
 
     if not file_dst_filename:
-        return 1
+        return 1, "invalid destination filename"
 
     # Ensure our dst_path exists or create it
     if not os.path.isdir(file_dst_path) and not dryrun:
@@ -455,7 +455,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
  
     if dryrun:
         logger(config, "Sort command: {}".format(' '.join(action_cmd)))
-        return 0
+        return 0, None
 
     # Handle upgrading by removing existing dest file
     dst_path = Path(file_dst)
@@ -466,16 +466,17 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
             logger(config, "done.")
         else:
             logger(config, "Destination file exists; skipping.")
-            return 1
+            return 1, "destination file exists"
 
     # Run the action
     logger(config, "Running sort action... ", nl=False)
     process = subprocess.run(action_cmd)
+    stderr = process.stderr.decode().strip()
     retcode = process.returncode
     logger(config, "done.")
 
     if retcode != 0:
-        return retcode
+        return retcode, stderr
 
     # Create info file
     if infofile:
@@ -515,7 +516,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
             os.chmod(shasum_name, int(file_mode, 8))
         logger(config, "done.")
 
-    return retcode
+    return retcode, None
 
 ###############################################################################
 # CLICK
@@ -650,9 +651,9 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
     dstpath = os.path.abspath(os.path.expanduser(dstpath))
 
     # Sort the media file
-    returncode = sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun)
+    returncode, reason = sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun)
     if returncode > 0:
-        logger(config, "Failed to sort file {}".format(srcpath))
+        logger(config, "Failed to sort file {}: {}".format(srcpath, reason))
     exit(returncode)
 
 # Entry point
