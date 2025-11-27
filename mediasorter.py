@@ -136,7 +136,7 @@ def sort_tv_file(config, srcpath, dstpath):
         )
         tvdb_token = response.json()['data']['token']
     except Exception:
-        logger(config, "Failed to log in to TVDB")
+        logger(config, "ERROR: Failed to log in to TVDB")
         return False, False
 
     tvdb_headers = {"Authorization": "Bearer {}".format(tvdb_token)}
@@ -151,7 +151,7 @@ def sort_tv_file(config, srcpath, dstpath):
         if show_data["status"] != "success":
             raise ValueError
     except Exception:
-        logger(config, "Failed to find results for {}".format(show_url))
+        logger(config, "ERROR: Failed to find results for {}".format(show_url))
         return False, False
 
     found_episode = None
@@ -173,7 +173,7 @@ def sort_tv_file(config, srcpath, dstpath):
             continue
 
     if not found_episode:
-        logger(config, "Failed to find results for {}".format(show_url))
+        logger(config, "ERROR: Failed to find results for {}".format(show_url))
         return False, False
     
     # Handle translations
@@ -189,7 +189,7 @@ def sort_tv_file(config, srcpath, dstpath):
                 raise ValueError
             series_title = series_translation_data["data"]["name"]
         except Exception:
-            logger(config, "Failed to find results for {}".format(series_translation_url))
+            logger(config, "ERROR: Failed to find results for {}".format(series_translation_url))
             return False, False
         # Handle series name overrides
         for title in config['tv_name_overrides']:
@@ -201,7 +201,7 @@ def sort_tv_file(config, srcpath, dstpath):
         try:
             episode_tvdb_id = found_episode["data"]["episodes"][0].get("id")
         except Exception:
-            logger(config, "Failed to find an episode ID for found episode")
+            logger(config, "ERROR: Failed to find an episode ID for found episode")
             return False, False
 
         # Get episode name (translated) from TVDB
@@ -215,7 +215,7 @@ def sort_tv_file(config, srcpath, dstpath):
                 raise ValueError
             episode_title = episode_translation_data["data"]["name"]
         except Exception:
-            logger(config, "Failed to find results for {}".format(episode_translation_url))
+            logger(config, "ERROR: Failed to find results for {}".format(episode_translation_url))
             return False, False
     # Use traditional approach
     else:
@@ -315,7 +315,7 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
         response = requests.get(movie_url)
         movie_data = response.json()
     except Exception:
-        logger(config, "Failed to find results for {}".format(show_url))
+        logger(config, "ERROR: Failed to find results for {}".format(show_url))
         return False, False
     
     # List all movies and find the one matching the year (within on year either side)
@@ -414,7 +414,7 @@ def sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, cho
             child_filename = '{}/{}'.format(srcpath, filename)
             returncode, reason = sort_file(config, child_filename, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun)
             if returncode > 0:
-                logger(config, "Failed to sort file {}: {}".format(srcpath, reason))
+                logger(config, "ERROR: Failed to sort file {}: {}".format(srcpath, reason))
         return 0, None
 
     logger(config, "Sorting action:   {}".format(action))
@@ -653,7 +653,7 @@ def cli_root(srcpath, dstpath, mediatype, action, infofile, shasum, chown, user,
     # Sort the media file
     returncode, reason = sort_file(config, srcpath, dstpath, mediatype, action, infofile, shasum, chown, user, group, file_mode, directory_mode, metainfo_tag, replace, dryrun)
     if returncode > 0:
-        logger(config, "Failed to sort file {}: {}".format(srcpath, reason))
+        logger(config, "ERROR: Failed to sort file {}: {}".format(srcpath, reason))
     exit(returncode)
 
 # Entry point
