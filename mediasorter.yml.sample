@@ -25,7 +25,7 @@ mediasorter:
 
             # API key for TVDB; YOU DO NOT NEED TO CHANGE THIS, it is registered to this project,
             # though you may change it if you wish to and have your own key
-            key: "c658d42b-d1d1-403d-ae39-9c96997b29a8"
+            key: "9775b9dc-daf1-4e10-9611-1921ecd154b4"
 
             # Base URL for TVDB; should generally not be changed
             url: "https://api4.thetvdb.com/v4"
