@@ -342,7 +342,8 @@ def sort_movie_file(config, srcpath, dstpath, metainfo_tag):
             elif int(release_year) == int(search_movie_year) + 1 or int(release_year) == int(search_movie_year) - 1:
                 movie_title = movie.get('title')
                 movie_year = release_year
-                # Candidate, but don't break
+                # Candidate, break - we pick the first match (ref: Kingsman Secret Service vs Kingsman Secret Service Revealed)
+                break
 
     if movie_title == 'unnamed':
         logger(config, "Error: No movie was found in the database for filename '{}'.".format(filename))
