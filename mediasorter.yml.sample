@@ -110,7 +110,6 @@ mediasorter:
           - '1080[iI]': 1080i
           - '2160[pP]': 2160p
           - '4[kK]': 2160p
-          - 'UHD': 2160p
           # Qualities/Sources
           - '[Ww][Ee][Bb].*': Web
           - 'BD': BD
